@@ -1,0 +1,21 @@
+{
+  "rules": {
+    ".read": "auth != null",  // Allow authenticated users to read
+    ".write": false,          // Default deny write
+    
+    "users": {
+      "$uid": {
+        // Allow either the user themselves or an admin to read/write user data
+        ".read": "auth != null && (auth.uid == $uid || root.child('users').child(auth.uid).child('isAdmin').val() == true)",
+        ".write": "auth != null && (auth.uid == $uid || root.child('users').child(auth.uid).child('isAdmin').val() == true)"
+      }
+    },
+    
+    "cabins": {
+      // Allow authenticated users to read cabins
+      ".read": "auth != null",
+      // Only admins can write to cabins
+      ".write": "root.child('users').child(auth.uid).child('isAdmin').val() == true"
+    }
+  }
+}
